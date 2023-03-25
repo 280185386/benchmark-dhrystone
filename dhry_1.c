@@ -74,7 +74,17 @@ float           Microseconds,
                 Dhrystones_Per_Second;
 float           DMIPS_MHZ;
 /* end of variables for time measurement */
-
+long csr_cycle()
+{
+  volatile unsigned long   LoadCount;
+  asm ("csrr %[LoadCount], cycle\n"
+      :[LoadCount]"=r"(LoadCount)
+      :
+      :
+      );
+  //LoadCount = *TIMER_ADDR;
+  return LoadCount;
+}
 
 main ()
 /*****/
