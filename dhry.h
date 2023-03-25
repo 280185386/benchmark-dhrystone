@@ -429,14 +429,4 @@ typedef struct record
       } Rec_Type, *Rec_Pointer;
 
 
-long csr_cycle()
-{
-  volatile unsigned long   LoadCount;
-  asm ("csrr %[LoadCount], cycle\n"
-      :[LoadCount]"=r"(LoadCount)
-      :
-      :
-      );
-  //LoadCount = *TIMER_ADDR;
-  return LoadCount;
-}
+
