@@ -64,13 +64,15 @@ extern long     time();
 extern clock_t	clock();
 #define Too_Small_Time (2*HZ)
 #endif
-
+long            Begin_Cycle,
+                End_Cycle,
+                User_Cycle;
 long            Begin_Time,
                 End_Time,
                 User_Time;
 float           Microseconds,
                 Dhrystones_Per_Second;
-
+float           DMIPS_MHZ;
 /* end of variables for time measurement */
 
 
@@ -150,7 +152,7 @@ main ()
 #ifdef MSC_CLOCK
   Begin_Time = clock();
 #endif
-
+  Begin_Cycle =  csr_cycle ();
   for (Run_Index = 1; Run_Index <= Number_Of_Runs; ++Run_Index)
   {
 
@@ -200,7 +202,7 @@ main ()
   /**************/
   /* Stop timer */
   /**************/
-  
+  End_Cycle = csr_cycle ();
 #ifdef TIMES
   times (&time_info);
   End_Time = (long) time_info.tms_utime;
@@ -266,7 +268,7 @@ main ()
   printf ("\n");
 
   User_Time = End_Time - Begin_Time;
-
+  User_Cycle = End_Cycle - Begin_Cycle;
   if (User_Time < Too_Small_Time)
   {
     printf ("Measured time too small to obtain meaningful results\n");
@@ -291,6 +293,10 @@ main ()
     printf ("Dhrystones per Second:                      ");
     //printf ("%6.1f \n", Dhrystones_Per_Second);
     printf ("%d \n", (int)Dhrystones_Per_Second);
+
+    DMIPS_MHZ = (1000000/((float)User_Cycle/(float)Number_Of_Runs))/1757;
+    printf ("       So the DMIPS/MHz can be caculated by: \n");
+    printf ("       1000000/(User_Cycle/Number_Of_Runs)/1757 = %2.6f DMIPS/MHz\n", DMIPS_MHZ);
     printf ("\n");
   }
   
